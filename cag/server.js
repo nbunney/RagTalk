@@ -59,16 +59,22 @@ app.post('/api/question', async (req, res) => {
     // Augment the question with Agile principles context and fourth-grade instruction
     const augmentedQuestion = `Context: Here are the Agile principles that should guide the response:\n\n${AGILE_PRINCIPLES}\n\nQuestion: ${question}\n\n${AUGMENTATION}`;
 
-    console.log('Original question:', question);
-    console.log('Augmented question:', augmentedQuestion);
+    console.log('🔍 Original question:', question);
+    console.log('📚 Context loaded:', AGILE_PRINCIPLES.length, 'characters');
+    console.log('📝 System instruction:', AUGMENTATION);
+    console.log('🤖 Calling X.ai API with full context...');
 
     // Call X.ai API
     const response = await axios.post(XAI_API_URL, {
       model: 'grok-3',
       messages: [
         {
+          role: 'system',
+          content: `Context: Here are the Agile principles that should guide the response:\n\n${AGILE_PRINCIPLES}\n\n${AUGMENTATION}`
+        },
+        {
           role: 'user',
-          content: augmentedQuestion
+          content: question
         }
       ],
       max_tokens: 1000,
@@ -82,7 +88,8 @@ app.post('/api/question', async (req, res) => {
 
     const answer = response.data.choices[0].message.content;
 
-    console.log('X.ai response:', answer);
+    console.log('✅ X.ai response received');
+    console.log('📄 Response length:', answer.length, 'characters');
 
     res.json({ 
       answer: answer,
@@ -94,7 +101,7 @@ app.post('/api/question', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error calling X.ai API:', error.response?.data || error.message);
+    console.error('❌ Error calling X.ai API:', error.response?.data || error.message);
     
     res.status(500).json({ 
       error: 'Failed to get response from X.ai API',

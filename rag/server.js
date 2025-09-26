@@ -77,18 +77,21 @@ app.post('/api/question', async (req, res) => {
     }
 
     console.log('🔍 Original question:', question);
+    console.log('📚 Total context available:', AGILE_PRINCIPLES_ARRAY.length, 'principles');
 
     // STEP 1: RAG - Ask X.ai which Agile principles are relevant
-    const relevanceQuery = `Here are the 12 Agile principles (numbered 1-12):
+    const principlesList = AGILE_PRINCIPLES_ARRAY.map((principle, index) => `${index + 1}. ${principle}`).join('\n');
+    const relevanceSystemMessage = `Here are the 12 Agile principles (numbered 1-12):
 
-${AGILE_PRINCIPLES_ARRAY.map((principle, index) => `${index + 1}. ${principle}`).join('\n')}
+${principlesList}
 
-Question: "${question}"
-
-Which of these Agile principles (by number) are most relevant to answering this question? Please respond with ONLY the numbers of the relevant principles, separated by commas. For example: "1, 3, 7"`;
+You need to identify which of these Agile principles are most relevant to answering a given question. Please respond with ONLY the numbers of the relevant principles, separated by commas. For example: "1, 3, 7"`;
 
     console.log('📋 Step 1: Identifying relevant principles...');
-    const relevantNumbers = await callXaiAPI([{ role: 'user', content: relevanceQuery }], 100);
+    const relevantNumbers = await callXaiAPI([
+      { role: 'system', content: relevanceSystemMessage },
+      { role: 'user', content: `Question: "${question}"` }
+    ], 100);
     console.log('🎯 Relevant principle numbers:', relevantNumbers);
 
     // Parse the relevant numbers
@@ -107,10 +110,20 @@ Which of these Agile principles (by number) are most relevant to answering this 
     const relevantContext = relevantPrinciples.join('\n');
     const finalQuery = `Context: Here are the relevant Agile principles for this question:\n\n${relevantContext}\n\nQuestion: ${question}\n\n${AUGMENTATION}`;
 
-    console.log('🤖 Step 2: Generating final response with relevant context...');
-    const answer = await callXaiAPI([{ role: 'user', content: finalQuery }], 1000);
+    console.log('🤖 Step 2: Calling X.ai API with selected context...');
+    const answer = await callXaiAPI([
+      { 
+        role: 'system', 
+        content: `Context: Here are the relevant Agile principles for this question:\n\n${relevantContext}\n\n${AUGMENTATION}` 
+      },
+      { 
+        role: 'user', 
+        content: question 
+      }
+    ], 1000);
 
-    console.log('✅ Final response generated');
+    console.log('✅ X.ai response received');
+    console.log('📄 Response length:', answer.length, 'characters');
 
     res.json({ 
       answer: answer,
@@ -124,7 +137,7 @@ Which of these Agile principles (by number) are most relevant to answering this 
     });
 
   } catch (error) {
-    console.error('Error in RAG process:', error.response?.data || error.message);
+    console.error('❌ Error in RAG process:', error.response?.data || error.message);
     
     res.status(500).json({ 
       error: 'Failed to process RAG request',

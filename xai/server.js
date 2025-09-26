@@ -46,16 +46,21 @@ app.post('/api/question', async (req, res) => {
     // Augment the question with fourth-grade instruction
     const augmentedQuestion = `${question}\n\n${AUGMENTATION}`;
 
-    console.log('Original question:', question);
-    console.log('Augmented question:', augmentedQuestion);
+    console.log('🔍 Original question:', question);
+    console.log('📝 System instruction:', AUGMENTATION);
+    console.log('🤖 Calling X.ai API...');
 
     // Call X.ai API
     const response = await axios.post(XAI_API_URL, {
       model: 'grok-3',
       messages: [
         {
+          role: 'system',
+          content: AUGMENTATION
+        },
+        {
           role: 'user',
-          content: augmentedQuestion
+          content: question
         }
       ],
       max_tokens: 1000,
@@ -69,7 +74,8 @@ app.post('/api/question', async (req, res) => {
 
     const answer = response.data.choices[0].message.content;
 
-    console.log('X.ai response:', answer);
+    console.log('✅ X.ai response received');
+    console.log('📄 Response length:', answer.length, 'characters');
 
     res.json({ 
       answer: answer,
@@ -79,7 +85,7 @@ app.post('/api/question', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error calling X.ai API:', error.response?.data || error.message);
+    console.error('❌ Error calling X.ai API:', error.response?.data || error.message);
     
     res.status(500).json({ 
       error: 'Failed to get response from X.ai API',
