@@ -1,6 +1,8 @@
 # RAG Talk Demo
 
-A comprehensive demonstration of different AI approaches: X.ai (direct), CAG (Context-Augmented Generation), and RAG (Retrieval-Augmented Generation). This project showcases how context and retrieval strategies can improve AI responses.
+A comprehensive demonstration of different AI approaches: X.ai (direct), CAG
+(Context-Augmented Generation), and RAG (Retrieval-Augmented Generation). This
+project showcases how context and retrieval strategies can improve AI responses.
 
 ## 🏗️ Project Structure
 
@@ -27,9 +29,11 @@ The React app will be available at `http://localhost:3000`
 
 ### 2. Choose Your Backend API
 
-You can run one of three different API servers to demonstrate different approaches:
+You can run one of three different API servers to demonstrate different
+approaches:
 
 #### Option A: Direct X.ai (Baseline)
+
 ```bash
 cd xai
 cp env.example .env
@@ -39,6 +43,7 @@ npm start
 ```
 
 #### Option B: CAG (Context-Augmented Generation)
+
 ```bash
 cd cag
 cp env.example .env
@@ -48,6 +53,7 @@ npm start
 ```
 
 #### Option C: RAG (Retrieval-Augmented Generation)
+
 ```bash
 cd rag
 cp env.example .env
@@ -58,23 +64,25 @@ npm start
 
 ## 📋 API Comparison
 
-| Approach | Description | Context Usage | Best For |
-|----------|-------------|---------------|----------|
-| **X.ai** | Direct API calls with simple augmentation | Fixed instruction only | Baseline comparison |
-| **CAG** | All context included in every request | All Agile principles | When all context is relevant |
-| **RAG** | AI selects relevant context dynamically | Only relevant principles | Large knowledge bases |
+| Approach | Description                               | Context Usage            | Best For                     |
+| -------- | ----------------------------------------- | ------------------------ | ---------------------------- |
+| **X.ai** | Direct API calls with simple augmentation | Fixed instruction only   | Baseline comparison          |
+| **CAG**  | All context included in every request     | All Agile principles     | When all context is relevant |
+| **RAG**  | AI selects relevant context dynamically   | Only relevant principles | Large knowledge bases        |
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
 Each API server requires:
+
 - `XAI_API_KEY` - Your X.ai API key
 - `PORT` - Server port (default: 8000)
 
 ### API Endpoints
 
 All servers provide:
+
 - `GET /health` - Health check
 - `POST /api/question` - Main question endpoint
 
@@ -91,22 +99,26 @@ All servers provide:
 ## 🎯 Key Features
 
 ### React Frontend
+
 - Clean, modern UI with gradient design
 - Real-time loading states and error handling
 - Responsive design for desktop and mobile
 - Direct API integration (no proxy needed)
 
 ### X.ai Server (Baseline)
+
 - Direct calls to X.ai's Grok-3 model
 - Eighth-grade level responses
 - Simple augmentation with fixed instructions
 
 ### CAG Server (Context-Augmented)
+
 - Includes all 12 Agile principles in every request
 - Demonstrates context augmentation
 - Shows how additional context improves responses
 
 ### RAG Server (Retrieval-Augmented)
+
 - Two-step process: relevance selection + generation
 - AI intelligently selects relevant Agile principles
 - Demonstrates true RAG with dynamic context retrieval
@@ -142,6 +154,7 @@ To demonstrate different approaches:
 ### Adding New Context
 
 To add new context files:
+
 1. Add your text file to the desired server directory
 2. Update the server code to read and include the file
 3. Modify the augmentation logic as needed
@@ -149,6 +162,7 @@ To add new context files:
 ### Customizing Responses
 
 Each server can be customized:
+
 - **X.ai**: Modify the `AUGMENTATION` constant
 - **CAG**: Update context loading and augmentation
 - **RAG**: Adjust relevance selection logic
