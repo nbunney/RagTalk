@@ -3,6 +3,7 @@ const cors = require('cors');
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const { Client } = require('pg');
 require('dotenv').config();
 
 const app = express();
@@ -16,8 +17,24 @@ app.use(express.json());
 const XAI_API_URL = 'https://api.x.ai/v1/chat/completions';
 const XAI_API_KEY = process.env.XAI_API_KEY;
 
+// Database configuration
+const dbConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 5432,
+  user: process.env.DB_USER || 'raguser',
+  password: process.env.DB_PASSWORD || 'ragpassword',
+  database: process.env.DB_NAME || 'ragdb',
+};
+
+// RAG Configuration - Always use vector database
+const USE_VECTOR_DB = true;
+
 // Augmentation text for eighth-grade level responses
 const AUGMENTATION = "Reply using the first person 'we' and as if you are talking to an eighth grader.";
+
+// Local embedding model
+let embeddingPipeline = null;
+let pipeline = null;
 
 // Load Agile principles context
 let AGILE_PRINCIPLES = '';
@@ -32,6 +49,88 @@ try {
   console.error('❌ Error loading agile principles:', error.message);
   AGILE_PRINCIPLES = 'Agile principles not available.';
   AGILE_PRINCIPLES_ARRAY = [];
+}
+
+// Initialize the local embedding model
+async function initializeEmbeddingModel() {
+  if (!embeddingPipeline) {
+    if (!pipeline) {
+      // Dynamic import for ES module
+      const transformers = await import('@xenova/transformers');
+      pipeline = transformers.pipeline;
+    }
+    console.log('🔄 Loading local embedding model (all-MiniLM-L6-v2)...');
+    embeddingPipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+    console.log('✅ Local embedding model loaded successfully');
+  }
+  return embeddingPipeline;
+}
+
+// Generate embedding for text using local model
+async function generateEmbedding(text) {
+  try {
+    const model = await initializeEmbeddingModel();
+    
+    // Generate embedding
+    const result = await model(text, {
+      pooling: 'mean',
+      normalize: true,
+    });
+    
+    // Convert to array format
+    return Array.from(result.data);
+  } catch (error) {
+    console.error('Error generating embedding:', error.message);
+    throw error;
+  }
+}
+
+// Vector similarity search in database - combines both knowledge sources
+async function findSimilarContent(queryEmbedding, limit = 5) {
+  const client = new Client(dbConfig);
+  
+  try {
+    await client.connect();
+    
+    // Search both Agile principles and software engineering Q&A documents
+    const query = `
+      (
+        SELECT 
+          'principle' as source_type,
+          principle_number::text as source_id,
+          principle_text as content,
+          1 - (embedding <=> $1::vector) as similarity
+        FROM agile_principles
+        WHERE embedding IS NOT NULL
+      )
+      UNION ALL
+      (
+        SELECT 
+          'document' as source_type,
+          id::text as source_id,
+          content,
+          1 - (embedding <=> $1::vector) as similarity
+        FROM documents
+        WHERE embedding IS NOT NULL
+      )
+      ORDER BY similarity DESC
+      LIMIT $2
+    `;
+    
+    // Format the embedding array to match the stored format exactly
+    const formattedEmbedding = `[${queryEmbedding.join(',')}]`;
+    const result = await client.query(query, [formattedEmbedding, limit]);
+    
+    return result.rows.map(row => ({
+      sourceType: row.source_type,
+      sourceId: row.source_id,
+      content: row.content,
+      similarity: parseFloat(row.similarity)
+    }));
+    
+  } finally {
+    await client.end();
+  }
 }
 
 // Helper function to call X.ai API
@@ -77,40 +176,38 @@ app.post('/api/question', async (req, res) => {
     }
 
     console.log('🔍 Original question:', question);
-    console.log('📚 Total context available:', AGILE_PRINCIPLES_ARRAY.length, 'principles');
+    console.log('🔧 RAG Mode: Vector Database (with local embeddings)');
 
-    // STEP 1: RAG - Ask X.ai which Agile principles are relevant
-    const principlesList = AGILE_PRINCIPLES_ARRAY.map((principle, index) => `${index + 1}. ${principle}`).join('\n');
-    const relevanceSystemMessage = `Here are the 12 Agile principles (numbered 1-12):
+    let relevantPrinciples = [];
+    let relevantNumbers = [];
+    let similarityScores = [];
 
-${principlesList}
+    // VECTOR DATABASE RAG - Use semantic similarity search across both knowledge sources
+    console.log('🔍 Step 1: Generating query embedding...');
+    const queryEmbedding = await generateEmbedding(question);
+    console.log(`📊 Query embedding: ${queryEmbedding.length} dimensions`);
 
-You need to identify which of these Agile principles are most relevant to answering a given question. Please respond with ONLY the numbers of the relevant principles, separated by commas. For example: "1, 3, 7"`;
+    console.log('🔍 Step 2: Finding similar content using vector search...');
+    const similarContent = await findSimilarContent(queryEmbedding, 5);
+    
+    // Separate principles and documents for response metadata
+    const principles = similarContent.filter(item => item.sourceType === 'principle');
+    const documents = similarContent.filter(item => item.sourceType === 'document');
+    
+    relevantPrinciples = similarContent.map(item => item.content);
+    relevantNumbers = principles.map(p => p.sourceId);
+    similarityScores = similarContent.map(item => item.similarity);
 
-    console.log('📋 Step 1: Identifying relevant principles...');
-    const relevantNumbers = await callXaiAPI([
-      { role: 'system', content: relevanceSystemMessage },
-      { role: 'user', content: `Question: "${question}"` }
-    ], 100);
-    console.log('🎯 Relevant principle numbers:', relevantNumbers);
-
-    // Parse the relevant numbers
-    const numbers = relevantNumbers.match(/\d+/g) || [];
-    const relevantPrinciples = numbers.map(num => {
-      const index = parseInt(num) - 1;
-      return AGILE_PRINCIPLES_ARRAY[index];
-    }).filter(principle => principle);
-
-    console.log(`📚 Selected ${relevantPrinciples.length} relevant principles:`);
-    relevantPrinciples.forEach((principle, index) => {
-      console.log(`   ${index + 1}. ${principle}`);
+    console.log(`📚 Found ${similarContent.length} similar content items:`);
+    similarContent.forEach((item, index) => {
+      const sourceLabel = item.sourceType === 'principle' ? `Principle ${item.sourceId}` : `Doc ${item.sourceId}`;
+      console.log(`   ${index + 1}. [${(item.similarity * 100).toFixed(1)}%] ${sourceLabel}: ${item.content.substring(0, 60)}...`);
     });
 
-    // STEP 2: Generate final response with only relevant context
+    // STEP 3: Generate final response with selected context
     const relevantContext = relevantPrinciples.join('\n');
-    const finalQuery = `Context: Here are the relevant Agile principles for this question:\n\n${relevantContext}\n\nQuestion: ${question}\n\n${AUGMENTATION}`;
-
-    console.log('🤖 Step 2: Calling X.ai API with selected context...');
+    console.log('🤖 Step 3: Calling X.ai API with selected context...');
+    
     const answer = await callXaiAPI([
       { 
         role: 'system', 
@@ -125,16 +222,26 @@ You need to identify which of these Agile principles are most relevant to answer
     console.log('✅ X.ai response received');
     console.log('📄 Response length:', answer.length, 'characters');
 
-    res.json({ 
+    const response = { 
       answer: answer,
       original_question: question,
-      relevant_principles: relevantPrinciples,
-      relevant_numbers: numbers,
+      relevant_content: relevantPrinciples,
+      relevant_principle_numbers: relevantNumbers,
       total_principles: AGILE_PRINCIPLES_ARRAY.length,
       selected_count: relevantPrinciples.length,
+      principles_found: principles.length,
+      documents_found: documents.length,
       model: 'grok-3',
-      rag_process: 'Two-step: relevance selection + final generation'
-    });
+      rag_mode: 'vector_database_combined'
+    };
+
+    // Add similarity scores
+    if (similarityScores.length > 0) {
+      response.similarity_scores = similarityScores;
+      response.avg_similarity = (similarityScores.reduce((a, b) => a + b, 0) / similarityScores.length).toFixed(3);
+    }
+
+    res.json(response);
 
   } catch (error) {
     console.error('❌ Error in RAG process:', error.response?.data || error.message);
@@ -153,6 +260,9 @@ app.listen(PORT, () => {
   console.log(`❓ Question endpoint: http://localhost:${PORT}/api/question`);
   console.log(`🔑 Make sure to set XAI_API_KEY environment variable`);
   console.log(`📚 Agile principles context loaded: ${AGILE_PRINCIPLES.length} characters`);
+  console.log(`🔧 RAG Mode: Vector Database (with local embeddings)`);
+  console.log(`🗄️  Database: ${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`);
+  console.log(`📚 Knowledge Sources: Agile Principles + Software Engineering Q&A`);
 });
 
 module.exports = app;

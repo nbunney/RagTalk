@@ -1,0 +1,262 @@
+[
+  {
+    "category": "Agile Methodology",
+    "question": "What is a sprint?",
+    "answer": "A sprint is a time-boxed iteration in Agile development, typically lasting 1-4 weeks, during which a team works to complete a set amount of work. Each sprint begins with sprint planning and ends with a sprint review and retrospective.",
+    "tags": [
+      "agile",
+      "scrum",
+      "process"
+    ]
+  },
+  {
+    "category": "Agile Methodology",
+    "question": "What is the role of a Scrum Master?",
+    "answer": "A Scrum Master is a facilitator who helps the team follow Agile principles and practices. They remove impediments, facilitate meetings, shield the team from distractions, and help improve team processes. They are not a manager but a servant leader.",
+    "tags": [
+      "agile",
+      "scrum",
+      "roles"
+    ]
+  },
+  {
+    "category": "Agile Methodology",
+    "question": "What is a product backlog?",
+    "answer": "A product backlog is a prioritized list of work items, features, and requirements for a product. The Product Owner maintains it, and items at the top are more detailed and ready for development. It's a living document that evolves as the product develops.",
+    "tags": [
+      "agile",
+      "scrum",
+      "planning"
+    ]
+  },
+  {
+    "category": "Software Design",
+    "question": "What is technical debt?",
+    "answer": "Technical debt refers to the implied cost of additional work caused by choosing quick or easy solutions now instead of better approaches that would take longer. Like financial debt, technical debt accumulates interest in the form of increased maintenance costs and reduced agility.",
+    "tags": [
+      "design",
+      "quality",
+      "maintenance"
+    ]
+  },
+  {
+    "category": "Software Design",
+    "question": "What is the Single Responsibility Principle?",
+    "answer": "The Single Responsibility Principle states that a class should have only one reason to change. It means a class should have only one job or responsibility. This makes code more maintainable, testable, and reduces the impact of changes.",
+    "tags": [
+      "design",
+      "solid",
+      "principles"
+    ]
+  },
+  {
+    "category": "Software Design",
+    "question": "What is dependency injection?",
+    "answer": "Dependency injection is a design pattern where dependencies are provided to an object rather than the object creating them itself. This promotes loose coupling, makes testing easier, and improves code flexibility by allowing dependencies to be swapped out.",
+    "tags": [
+      "design",
+      "patterns",
+      "testing"
+    ]
+  },
+  {
+    "category": "Testing",
+    "question": "What is test-driven development (TDD)?",
+    "answer": "Test-Driven Development is a practice where you write tests before writing the actual code. The cycle is: write a failing test, write minimal code to pass the test, then refactor. This ensures code is testable and meets requirements from the start.",
+    "tags": [
+      "testing",
+      "tdd",
+      "quality"
+    ]
+  },
+  {
+    "category": "Testing",
+    "question": "What is the difference between unit and integration tests?",
+    "answer": "Unit tests verify individual components in isolation, typically testing a single function or class. Integration tests verify that multiple components work together correctly. Unit tests are faster and more focused, while integration tests catch issues in component interactions.",
+    "tags": [
+      "testing",
+      "types",
+      "quality"
+    ]
+  },
+  {
+    "category": "Testing",
+    "question": "What is mocking in testing?",
+    "answer": "Mocking is creating fake versions of dependencies to isolate the code being tested. Mocks simulate the behavior of real objects in controlled ways, allowing you to test components independently and verify interactions between objects.",
+    "tags": [
+      "testing",
+      "mocking",
+      "isolation"
+    ]
+  },
+  {
+    "category": "Version Control",
+    "question": "What is a pull request?",
+    "answer": "A pull request (PR) is a method of submitting code changes for review. It allows team members to review code, discuss changes, suggest improvements, and ensure quality before merging into the main codebase. It's a key collaboration tool in modern development.",
+    "tags": [
+      "git",
+      "collaboration",
+      "process"
+    ]
+  },
+  {
+    "category": "Version Control",
+    "question": "What is the difference between merge and rebase?",
+    "answer": "Merge combines two branches by creating a new merge commit, preserving the complete history. Rebase moves or combines commits to a new base, creating a linear history. Merge is safer and preserves context, while rebase creates cleaner history but rewrites it.",
+    "tags": [
+      "git",
+      "branching",
+      "workflow"
+    ]
+  },
+  {
+    "category": "Version Control",
+    "question": "What is a git conflict?",
+    "answer": "A git conflict occurs when two branches have made different changes to the same part of a file. Git cannot automatically determine which change to keep, so it marks the conflict and requires manual resolution by the developer to decide which changes to keep.",
+    "tags": [
+      "git",
+      "merging",
+      "conflicts"
+    ]
+  },
+  {
+    "category": "DevOps",
+    "question": "What is continuous integration?",
+    "answer": "Continuous Integration (CI) is the practice of automatically building and testing code whenever changes are pushed to version control. It helps catch issues early, ensures code integrates properly, and maintains a working main branch. Teams typically use CI servers like Jenkins or GitHub Actions.",
+    "tags": [
+      "devops",
+      "ci",
+      "automation"
+    ]
+  },
+  {
+    "category": "DevOps",
+    "question": "What is continuous deployment?",
+    "answer": "Continuous Deployment (CD) automatically deploys code changes to production after passing all tests. Every change that passes the automated pipeline is released to users. This requires robust testing, monitoring, and the ability to quickly rollback if issues arise.",
+    "tags": [
+      "devops",
+      "cd",
+      "automation"
+    ]
+  },
+  {
+    "category": "DevOps",
+    "question": "What is containerization?",
+    "answer": "Containerization packages an application with all its dependencies into a standardized unit called a container. Containers are lightweight, portable, and ensure consistent environments from development to production. Docker is the most popular containerization platform.",
+    "tags": [
+      "devops",
+      "docker",
+      "deployment"
+    ]
+  },
+  {
+    "category": "Architecture",
+    "question": "What is microservices architecture?",
+    "answer": "Microservices architecture structures an application as a collection of small, independent services that communicate over networks. Each service handles a specific business capability, can be deployed independently, and may use different technologies. This improves scalability and maintainability.",
+    "tags": [
+      "architecture",
+      "microservices",
+      "design"
+    ]
+  },
+  {
+    "category": "Architecture",
+    "question": "What is an API Gateway?",
+    "answer": "An API Gateway is a server that acts as an entry point for client requests to backend services. It handles request routing, composition, authentication, rate limiting, and load balancing. It simplifies client code and provides a single point for cross-cutting concerns.",
+    "tags": [
+      "architecture",
+      "api",
+      "gateway"
+    ]
+  },
+  {
+    "category": "Architecture",
+    "question": "What is event-driven architecture?",
+    "answer": "Event-driven architecture is a design pattern where components communicate by producing and consuming events. Events represent state changes or significant occurrences. This enables loose coupling, scalability, and real-time processing. Systems react to events as they happen.",
+    "tags": [
+      "architecture",
+      "events",
+      "patterns"
+    ]
+  },
+  {
+    "category": "Performance",
+    "question": "What is caching?",
+    "answer": "Caching stores frequently accessed data in fast storage to reduce retrieval time and server load. Common strategies include in-memory caches (Redis, Memcached) and CDNs for static content. Effective caching significantly improves application performance and user experience.",
+    "tags": [
+      "performance",
+      "caching",
+      "optimization"
+    ]
+  },
+  {
+    "category": "Performance",
+    "question": "What is database indexing?",
+    "answer": "Database indexing creates data structures that improve the speed of data retrieval operations. Like a book index, it allows the database to find data without scanning every row. Indexes speed up queries but slow down writes and use additional storage.",
+    "tags": [
+      "performance",
+      "database",
+      "optimization"
+    ]
+  },
+  {
+    "category": "Security",
+    "question": "What is SQL injection?",
+    "answer": "SQL injection is a security vulnerability where attackers insert malicious SQL code into input fields. If not properly sanitized, this code can execute unauthorized database operations. Prevention includes using parameterized queries, input validation, and principle of least privilege.",
+    "tags": [
+      "security",
+      "vulnerabilities",
+      "sql"
+    ]
+  },
+  {
+    "category": "Security",
+    "question": "What is OAuth?",
+    "answer": "OAuth is an open standard for access delegation. It allows users to grant third-party applications access to their resources without sharing passwords. OAuth uses tokens instead of credentials, providing secure, limited access that can be revoked.",
+    "tags": [
+      "security",
+      "authentication",
+      "oauth"
+    ]
+  },
+  {
+    "category": "Security",
+    "question": "What is Cross-Site Scripting (XSS)?",
+    "answer": "Cross-Site Scripting is a vulnerability where attackers inject malicious scripts into web pages viewed by other users. These scripts can steal data, hijack sessions, or deface websites. Prevention includes sanitizing user input, encoding output, and using Content Security Policy.",
+    "tags": [
+      "security",
+      "vulnerabilities",
+      "xss"
+    ]
+  },
+  {
+    "category": "Team Collaboration",
+    "question": "What is pair programming?",
+    "answer": "Pair programming is a practice where two developers work together at one workstation. One writes code (driver) while the other reviews each line (navigator). They frequently switch roles. This improves code quality, knowledge sharing, and reduces bugs.",
+    "tags": [
+      "collaboration",
+      "practices",
+      "agile"
+    ]
+  },
+  {
+    "category": "Team Collaboration",
+    "question": "What is code review?",
+    "answer": "Code review is the systematic examination of code by team members before it's merged. Reviewers check for bugs, adherence to standards, design issues, and suggest improvements. It improves code quality, shares knowledge, and maintains consistency.",
+    "tags": [
+      "collaboration",
+      "quality",
+      "process"
+    ]
+  },
+  {
+    "category": "Team Collaboration",
+    "question": "What is a daily standup?",
+    "answer": "A daily standup is a short meeting where team members synchronize work. Each person briefly shares what they did yesterday, what they'll do today, and any blockers. It keeps everyone informed, identifies issues early, and should be timeboxed to 15 minutes.",
+    "tags": [
+      "collaboration",
+      "agile",
+      "meetings"
+    ]
+  }
+]

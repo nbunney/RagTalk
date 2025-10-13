@@ -14,8 +14,8 @@ app.use(express.json());
 const XAI_API_URL = 'https://api.x.ai/v1/chat/completions';
 const XAI_API_KEY = process.env.XAI_API_KEY;
 
-// Augmentation text for fourth-grade level responses
-const AUGMENTATION = "Reply using the first person 'we' and as if you are talking to a fourth grader.";
+// Augmentation text for eighth-grade level responses
+const AUGMENTATION = "Reply using the first person 'we' and as if you are talking to an eighth grader.";
 
 // Health check endpoint
 app.get('/health', (req, res) => {
