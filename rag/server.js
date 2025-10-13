@@ -36,20 +36,8 @@ const AUGMENTATION = "Reply using the first person 'we' and as if you are talkin
 let embeddingPipeline = null;
 let pipeline = null;
 
-// Load Agile principles context
-let AGILE_PRINCIPLES = '';
-let AGILE_PRINCIPLES_ARRAY = [];
-try {
-  const principlesPath = path.join(__dirname, 'agileprinciples.txt');
-  AGILE_PRINCIPLES = fs.readFileSync(principlesPath, 'utf8');
-  AGILE_PRINCIPLES_ARRAY = AGILE_PRINCIPLES.split('\n').filter(line => line.trim() !== '');
-  console.log('✅ Agile principles loaded successfully');
-  console.log(`📚 Loaded ${AGILE_PRINCIPLES_ARRAY.length} Agile principles`);
-} catch (error) {
-  console.error('❌ Error loading agile principles:', error.message);
-  AGILE_PRINCIPLES = 'Agile principles not available.';
-  AGILE_PRINCIPLES_ARRAY = [];
-}
+// Note: Agile principles are now stored in the vector database
+// No need to load from text file since we use semantic search
 
 // Initialize the local embedding model
 async function initializeEmbeddingModel() {
@@ -227,11 +215,11 @@ app.post('/api/question', async (req, res) => {
       original_question: question,
       relevant_content: relevantPrinciples,
       relevant_principle_numbers: relevantNumbers,
-      total_principles: AGILE_PRINCIPLES_ARRAY.length,
+      total_sources: similarContent.length,
       selected_count: relevantPrinciples.length,
       principles_found: principles.length,
       documents_found: documents.length,
-      model: 'grok-3',
+      model: 'grok-4',
       rag_mode: 'vector_database_combined'
     };
 
@@ -259,10 +247,9 @@ app.listen(PORT, () => {
   console.log(`📡 Health check: http://localhost:${PORT}/health`);
   console.log(`❓ Question endpoint: http://localhost:${PORT}/api/question`);
   console.log(`🔑 Make sure to set XAI_API_KEY environment variable`);
-  console.log(`📚 Agile principles context loaded: ${AGILE_PRINCIPLES.length} characters`);
+  console.log(`📚 Knowledge sources: Vector database (Agile principles + Q&A documents)`);
   console.log(`🔧 RAG Mode: Vector Database (with local embeddings)`);
   console.log(`🗄️  Database: ${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`);
-  console.log(`📚 Knowledge Sources: Agile Principles + Software Engineering Q&A`);
 });
 
 module.exports = app;

@@ -66,7 +66,7 @@ app.post('/api/question', async (req, res) => {
 
     // Call X.ai API
     const response = await axios.post(XAI_API_URL, {
-      model: 'grok-3',
+      model: 'grok-4',
       messages: [
         {
           role: 'system',
@@ -95,7 +95,7 @@ app.post('/api/question', async (req, res) => {
       answer: answer,
       original_question: question,
       augmented_question: augmentedQuestion,
-      model: 'grok-3',
+      model: 'grok-4',
       context_used: 'Agile Principles',
       context_length: AGILE_PRINCIPLES.length
     });

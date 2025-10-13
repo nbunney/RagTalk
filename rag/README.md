@@ -53,7 +53,7 @@ make responses appropriate for eighth graders.
    "answer": "We use sunlight to make food for plants! It's like a kitchen in the leaves...",
    "original_question": "What is photosynthesis?",
    "augmented_question": "What is photosynthesis?\n\nReply using the first person 'we' and as if you are talking to a fourth grader.",
-   "model": "grok-beta"
+   "model": "grok-4"
 }
 ```
 

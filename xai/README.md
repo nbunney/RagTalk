@@ -42,7 +42,7 @@ make responses appropriate for fourth graders.
 
 ```json
 {
-  "question": "What is photosynthesis?"
+   "question": "What is photosynthesis?"
 }
 ```
 
@@ -50,10 +50,10 @@ make responses appropriate for fourth graders.
 
 ```json
 {
-  "answer": "We use sunlight to make food for plants! It's like a kitchen in the leaves...",
-  "original_question": "What is photosynthesis?",
-  "augmented_question": "What is photosynthesis?\n\nReply using the first person 'we' and as if you are talking to a fourth grader.",
-  "model": "grok-beta"
+   "answer": "We use sunlight to make food for plants! It's like a kitchen in the leaves...",
+   "original_question": "What is photosynthesis?",
+   "augmented_question": "What is photosynthesis?\n\nReply using the first person 'we' and as if you are talking to a fourth grader.",
+   "model": "grok-4"
 }
 ```
 
