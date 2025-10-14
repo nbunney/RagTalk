@@ -20,7 +20,7 @@ const XAI_API_KEY: string | undefined = process.env.XAI_API_KEY;
 
 // Augmentation text for eighth-grade level responses
 const
-  AUGMENTATION = "Reply using the first person 'we' and as if you are talking to an eighth grader.";
+  AUGMENTATION = "Reply using the first person 'we' and provide technical explanations suitable for experienced software engineers. Keep your response to exactly two paragraphs.";
 
 // Load Agile principles context
 let AGILE_PRINCIPLES: string = '';

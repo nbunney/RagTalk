@@ -39,7 +39,7 @@ const dbConfig: DbConfig = {
 const USE_VECTOR_DB = true;
 
 // Augmentation text for eighth-grade level responses
-const AUGMENTATION = "Reply using the first person 'we' and as if you are talking to an eighth grader.";
+const AUGMENTATION = "Reply using the first person 'we' and provide technical explanations suitable for experienced software engineers. Keep your response to exactly two paragraphs.";
 
 
 // Interface for similar content result

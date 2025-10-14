@@ -17,7 +17,7 @@ const XAI_API_URL = 'https://api.x.ai/v1/chat/completions';
 const XAI_API_KEY: string | undefined = process.env.XAI_API_KEY;
 
 // Augmentation text for eighth-grade level responses
-const AUGMENTATION = "Reply using the first person 'we' and as if you are talking to an eighth grader.";
+const AUGMENTATION = "Reply using the first person 'we' and provide technical explanations suitable for experienced software engineers. Keep your response to exactly two paragraphs.";
 
 // Interface for X.ai API request
 interface XaiMessage {

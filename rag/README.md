@@ -2,13 +2,14 @@
 
 This is the third API server for your RAG talk demo. It takes questions from the
 React frontend and forwards them to the RAG API with a specific augmentation to
-make responses appropriate for eighth graders.
+provide technical explanations suitable for experienced software engineers.
 
 ## Features
 
 - Forwards questions to RAG's API
-- Augments requests with: "Reply using the first person 'we' and as if you are
-  talking to an eighth grader."
+- Augments requests with: "Reply using the first person 'we' and provide
+  technical explanations suitable for experienced software engineers. Keep your
+  response to exactly two paragraphs."
 - Provides detailed logging for demo purposes
 - Health check endpoint
 - Error handling and validation
