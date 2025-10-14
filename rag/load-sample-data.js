@@ -46,6 +46,11 @@ async function generateEmbedding(text) {
     const embedding = Array.from(result.data);
     
     console.log(`  📊 Generated embedding: ${embedding.length} dimensions`);
+    
+    // Show first 8 values of the vector for demo purposes
+    const firstValues = embedding.slice(0, 8).map(v => v.toFixed(4));
+    console.log(`  🔢 Vector preview: [${firstValues.join(', ')}...]`);
+    
     return embedding;
   } catch (error) {
     console.error('Error generating embedding:', error.message);
@@ -90,6 +95,7 @@ async function insertDocument(client, doc) {
     `[${embedding.join(',')}]`,
   ]);
   
+  console.log(`  ✅ Inserted document ID: ${result.rows[0].id}`);
   return result.rows[0].id;
 }
 
@@ -107,6 +113,8 @@ async function updateAgilePrincipleEmbeddings(client) {
       'UPDATE agile_principles SET embedding = $1 WHERE id = $2',
       [`[${embedding.join(',')}]`, principle.id]
     );
+    
+    console.log(`  ✅ Updated principle ${principle.id} with embedding`);
   }
   
   console.log(`✅ Updated ${result.rows.length} Agile principle embeddings`);
