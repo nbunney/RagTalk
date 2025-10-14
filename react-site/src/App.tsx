@@ -1,13 +1,31 @@
 import React, { useState } from 'react';
 import './App.css';
 
-function App() {
-  const [question, setQuestion] = useState('');
-  const [response, setResponse] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+interface ApiResponse {
+  answer: string;
+  original_question: string;
+  augmented_question?: string;
+  model: string;
+  context_used?: string;
+  context_length?: number;
+  relevant_content?: string[];
+  relevant_principle_numbers?: string[];
+  total_sources?: number;
+  selected_count?: number;
+  principles_found?: number;
+  documents_found?: number;
+  rag_mode?: string;
+  similarity_scores?: number[];
+  avg_similarity?: string;
+}
 
-  const handleSubmit = async (e) => {
+function App(): JSX.Element {
+  const [question, setQuestion] = useState<string>('');
+  const [response, setResponse] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!question.trim()) return;
 
@@ -29,10 +47,10 @@ function App() {
         throw new Error(`API request failed: ${apiResponse.status}`);
       }
 
-      const data = await apiResponse.json();
+      const data: ApiResponse = await apiResponse.json();
       setResponse(data.answer || 'No response received');
     } catch (err) {
-      setError(`Error: ${err.message}`);
+      setError(`Error: ${(err as Error).message}`);
       console.error('API Error:', err);
     } finally {
       setLoading(false);
@@ -55,11 +73,11 @@ function App() {
                 onChange={(e) => setQuestion(e.target.value)}
                 placeholder="Enter your question here..."
                 className="question-input"
-                rows="4"
+                rows={4}
                 disabled={loading}
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="submit-button"
                 disabled={loading || !question.trim()}
               >
